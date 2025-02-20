@@ -1,191 +1,252 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Unit Monitoring</title>
-  <style>
-    /* General Styles */
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f9fafb;
-      color: #374151;
-      line-height: 1.6;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit Monitoring System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4a90e2;
+            --secondary-color: #6c5ce7;
+            --accent-color: #00b894;
+            --background: linear-gradient(135deg, #f0f4ff 0%, #e6e9f2 100%);
+        }
 
-    header {
-      background: linear-gradient(135deg, #1e40af, #3b82f6);
-      color: white;
-      text-align: center;
-      padding: 2rem 1rem;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
 
-    header h1 {
-      font-size: 1.8rem;
-      margin: 0;
-    }
+        body {
+            background: var(--background);
+            min-height: 100vh;
+            padding: 30px 20px;
+        }
 
-    main {
-      padding: 1rem;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+        }
 
-    footer {
-      text-align: center;
-      padding: 1rem 0;
-      background-color: #1e40af;
-      color: white;
-      position: relative;
-      bottom: 0;
-      width: 100%;
-    }
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            padding: 30px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            transform: translateY(0);
+            animation: headerSlide 0.8s ease-out;
+        }
 
-    /* Section Styles */
-    .section-title {
-      font-size: 1.5rem;
-      color: #1e40af;
-      margin-bottom: 1rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
+        @keyframes headerSlide {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
 
-    .section-title svg {
-      width: 1.5rem;
-      height: 1.5rem;
-      fill: #1e40af;
-    }
+        .division-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+        }
 
-    /* Card Styles */
-    .card-container {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 1.5rem;
-    }
+        .division-card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
 
-    .card {
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      overflow: hidden;
-      transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-      cursor: pointer;
-    }
+        .division-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+        }
 
-    .card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
-    }
+        .division-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(0,0,0,0.08);
+        }
 
-    .card-header {
-      background-color: #e0f2fe;
-      padding: 1rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
+        .division-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            color: white;
+            font-size: 22px;
+        }
 
-    .card-header svg {
-      width: 1.5rem;
-      height: 1.5rem;
-      fill: #0ea5e9;
-    }
+        .unit-list {
+            list-style: none;
+        }
 
-    .card-body {
-      padding: 1rem;
-    }
+        .unit-item {
+            padding: 15px;
+            margin: 8px 0;
+            background: #f8f9ff;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.2s ease;
+        }
 
-    .card-title {
-      font-size: 1.2rem;
-      margin: 0;
-      color: #1e40af;
-    }
+        .unit-item:hover {
+            background: #f1f3ff;
+            transform: translateX(5px);
+        }
 
-    .card-subtitle {
-      font-size: 0.9rem;
-      color: #6b7280;
-      margin-top: 0.5rem;
-    }
+        .map-icon {
+            color: var(--accent-color);
+            cursor: pointer;
+            transition: transform 0.2s;
+            padding: 8px;
+            border-radius: 8px;
+            margin-left: 10px;
+        }
 
-    /* Responsive Design */
-    @media (max-width: 768px) {
-      .card-container {
-        grid-template-columns: 1fr;
-      }
-    }
-  </style>
+        .map-icon:hover {
+            transform: scale(1.1);
+            background: rgba(0,184,148,0.1);
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255,255,255,0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 20px;
+                margin-bottom: 30px;
+            }
+            
+            .division-card {
+                padding: 20px;
+            }
+        }
+    </style>
 </head>
 <body>
-  <header>
-    <h1>Unit Monitoring System</h1>
-  </header>
-  <main>
-    <div id="content"></div>
-  </main>
-  <footer>
-    <p>&copy; 2023 Unit Monitoring</p>
-  </footer>
+    <div class="loading-overlay" id="loading">
+        <div class="spinner"></div>
+    </div>
 
-  <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      // Ganti URL ini dengan URL Google Apps Script yang telah dideploy
-      const googleScriptUrl = 'https://script.google.com/macros/s/AKfycbyv2o_FCATZnKVIfA_SUpt7yuvRqOQE_PS2Y91AZutgCeGVCJE6nqU6iemR5wyejw0U/exec';
+    <div class="container">
+        <div class="header">
+            <h1 style="font-size: 2.5em; margin-bottom: 10px;">🚗 Unit Tracking System</h1>
+            <p style="opacity: 0.9;">Real-time Monitoring for All Divisions</p>
+        </div>
+        
+        <div class="division-grid" id="divisionsContainer"></div>
+    </div>
 
-      fetch(googleScriptUrl)
-        .then(response => response.json())
-        .then(data => {
-          const contentDiv = document.getElementById('content');
+    <script>
+        const API_URL = 'https://script.google.com/macros/s/AKfycbyz5aOqlubpNXmbXrxkrBCMSIX2FGzaPvQX-qxZHrjZd--0FVt0NtD4cBvfYo6zEhsS/exec';
+        
+        // Tampilkan loading saat mulai
+        document.getElementById('loading').style.display = 'flex';
 
-          // Kelompokkan data berdasarkan divisi
-          const groupedData = {};
-          data.forEach(item => {
-            if (!groupedData[item.divisi]) {
-              groupedData[item.divisi] = [];
+        const divisionIcons = {
+            'Kendaraan': 'car',
+            'Logistik': 'truck-moving',
+            'Teknologi': 'microchip',
+            'Operasional': 'cogs',
+            'Pemasaran': 'chart-line',
+            'HRD': 'users'
+        };
+
+        async function loadData() {
+            try {
+                const response = await fetch(API_URL);
+                const data = await response.json();
+                
+                const container = document.getElementById('divisionsContainer');
+                container.innerHTML = '';
+                
+                for (const [division, units] of Object.entries(data)) {
+                    const card = document.createElement('div');
+                    card.className = 'division-card';
+                    
+                    const iconClass = divisionIcons[division] || 'building';
+                    
+                    card.innerHTML = `
+                        <div class="division-header">
+                            <div class="division-icon">
+                                <i class="fas fa-${iconClass}"></i>
+                            </div>
+                            <h2 style="color: var(--primary-color);">${division}</h2>
+                        </div>
+                        <ul class="unit-list">
+                            ${units.map(unit => `
+                                <li class="unit-item">
+                                    <span>${unit.unit}</span>
+                                    <i class="fas fa-map-marker-alt map-icon" 
+                                       data-link="${unit.link}"
+                                       title="Open Tracking"></i>
+                                </li>
+                            `).join('')}
+                        </ul>
+                    `;
+                    
+                    // Event listener untuk icon map
+                    card.querySelectorAll('.map-icon').forEach(icon => {
+                        icon.addEventListener('click', () => {
+                            window.open(icon.dataset.link, '_blank');
+                        });
+                    });
+                    
+                    container.appendChild(card);
+                }
+                
+            } catch (error) {
+                console.error('Error loading data:', error);
+                alert('Gagal memuat data. Silakan coba lagi.');
+            } finally {
+                // Sembunyikan loading
+                document.getElementById('loading').style.display = 'none';
             }
-            groupedData[item.divisi].push(item);
-          });
+        }
 
-          // Tampilkan data dalam bentuk card
-          for (const [divisi, units] of Object.entries(groupedData)) {
-            const section = document.createElement('section');
-            section.innerHTML = `
-              <h2 class="section-title">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                  <path d="M18.71 8.21a1 1 0 0 0-1.42 0l-4.58 4.59a1 1 0 0 1-1.42 0L6.71 8.21a1 1 0 0 0-1.42 1.42L10 14.59l5.71-5.78a1 1 0 0 0 0-1.42z"/>
-                </svg>
-                ${divisi}
-              </h2>
-              <div class="card-container"></div>
-            `;
-            contentDiv.appendChild(section);
-
-            const cardContainer = section.querySelector('.card-container');
-            units.forEach(unit => {
-              const card = document.createElement('div');
-              card.className = 'card';
-              card.innerHTML = `
-                <div class="card-header">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
-                  </svg>
-                  <span>${unit.unit}</span>
-                </div>
-                <div class="card-body">
-                  <p class="card-title">${unit.unit}</p>
-                  <p class="card-subtitle">Click to track</p>
-                </div>
-              `;
-              card.onclick = () => window.open(unit.link, '_blank');
-              cardContainer.appendChild(card);
-            });
-          }
-        })
-        .catch(error => console.error('Error fetching data:', error));
-    });
-  </script>
+        loadData();
+    </script>
 </body>
 </html>
