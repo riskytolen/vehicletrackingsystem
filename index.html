@@ -118,7 +118,7 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1><i class="fas fa-car-side"></i> Dynamic Vehicle Tracking</h1>
+            <h1><i class="fas fa-truck"></i> Dynamic Vehicle Tracking</h1>
             <p>Real-time monitoring kendaraan berbasis Google Sheets</p>
         </div>
 
@@ -140,14 +140,6 @@
             '#e74c3c', // Red
             '#1abc9c'  // Turquoise
         ];
-
-        const ICON_MAP = {
-            'GUDANG': 'warehouse',
-            'LOGISTIK': 'truck',
-            'PEMELIHARAAN': 'tools',
-            'HYBRID': 'charging-station',
-            'DEFAULT': 'car'
-        };
 
         async function fetchData() {
             try {
@@ -173,11 +165,6 @@
             return DEFAULT_COLORS[Math.abs(hash) % DEFAULT_COLORS.length];
         }
 
-        function getDivisionIcon(divisionName) {
-            const formattedName = divisionName.toUpperCase();
-            return ICON_MAP[formattedName] || ICON_MAP.DEFAULT;
-        }
-
         function renderData(data) {
             const container = document.getElementById('divisions-container');
             container.innerHTML = '';
@@ -188,7 +175,7 @@
                 
                 divisionCard.innerHTML = `
                     <div class="card-header">
-                        <i class="fas fa-${getDivisionIcon(divisionName)}"></i>
+                        <i class="fas fa-truck"></i>
                         <h2>${divisionName}</h2>
                     </div>
                     ${units.map(unit => `
