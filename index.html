@@ -62,40 +62,14 @@
         .card-header {
             display: flex;
             align-items: center;
-            justify-content: space-between;
             margin-bottom: 1rem;
-            padding: 1rem;
-            border-radius: 8px;
-            background: #f8f9fa;
-            cursor: pointer;
-            transition: background 0.3s ease;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #eee;
         }
 
-        .card-header:hover {
-            background: #e9ecef;
-        }
-
-        .card-header h2 {
-            margin: 0;
-            font-size: 1.25rem;
-        }
-
-        .chevron {
-            transition: transform 0.3s ease;
-        }
-
-        .division-card.active .chevron {
-            transform: rotate(180deg);
-        }
-
-        .units-container {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .division-card.active .units-container {
-            max-height: 1000px;
+        .card-header i {
+            font-size: 1.5rem;
+            margin-right: 1rem;
         }
 
         .unit-item {
@@ -106,14 +80,12 @@
             margin: 0.5rem 0;
             background: #f8f9fa;
             border-radius: 8px;
-            opacity: 0;
-            transform: translateY(-10px);
             transition: all 0.3s ease;
         }
 
-        .division-card.active .unit-item {
-            opacity: 1;
-            transform: translateY(0);
+        .unit-item:hover {
+            background: var(--secondary);
+            color: white;
         }
 
         .track-btn {
@@ -130,41 +102,10 @@
             opacity: 0.9;
         }
 
-        .loading-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(255, 255, 255, 0.95);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-
-        .loader {
-            width: 80px;
-            height: 80px;
-            position: relative;
-        }
-
-        .loader div {
-            position: absolute;
-            width: 16px;
-            height: 16px;
-            background: var(--secondary);
-            border-radius: 50%;
-            animation: loader 1.2s linear infinite;
-        }
-
-        .loader div:nth-child(1) { left: 8px; animation-delay: 0s; }
-        .loader div:nth-child(2) { left: 32px; animation-delay: 0.4s; }
-        .loader div:nth-child(3) { left: 56px; animation-delay: 0.8s; }
-
-        @keyframes loader {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            font-size: 1.2rem;
         }
 
         @media (max-width: 768px) {
@@ -181,12 +122,8 @@
             <p>Real-time monitoring kendaraan perusahaan</p>
         </div>
 
-        <div class="loading-container" id="loading">
-            <div class="loader">
-                <div></div>
-                <div></div>
-                <div></div>
-            </div>
+        <div id="loading" class="loading">
+            <i class="fas fa-spinner fa-spin"></i> Memuat data...
         </div>
 
         <div id="content" style="display: none;">
@@ -195,71 +132,68 @@
     </div>
 
     <script>
-        const COLORS = {
-            'GUDANG': '#3498db',
-            'CP SUKA': '#e67e22',
-            'HYBRID': '#2ecc71'
+        const DIVISION_ICONS = {
+            'GUDANG': 'warehouse',
+            'CP SUKA': 'truck-moving',
+            'HYBRID': 'charging-station'
         };
 
-        async function fetchData() {
-            try {
-                const API_URL = 'https://script.google.com/macros/s/AKfycbzHm160N3N1Zi2Gw7KO-TROlXNkFgW9mhYLHKHXyhRgZMM8kpNarH7Zya0oPMbF6kM/exec';
-                const response = await fetch(API_URL);
-                const data = await response.json();
-                
-                document.getElementById('loading').style.display = 'none';
-                document.getElementById('content').style.display = 'block';
-                
-                renderData(data);
-            } catch (error) {
-                console.error('Error:', error);
-                document.getElementById('loading').innerHTML = 
-                    '<p style="color: red">Gagal memuat data. Silakan refresh halaman.</p>';
-            }
-        }
+     const COLORS = {
+    'GUDANG': '#3498db',
+    'CP SUKA': '#e67e22',
+    'HYBRID': '#2ecc71'
+};
 
-        function renderData(data) {
-            const container = document.getElementById('divisions-container');
-            
-            for(const [divisionName, units] of Object.entries(data)) {
-                const formattedDivisionName = divisionName.replace(/_/g, ' ');
-                
-                const divisionCard = document.createElement('div');
-                divisionCard.className = 'division-card';
-                divisionCard.innerHTML = `
-                    <div class="card-header">
-                        <div style="display: flex; align-items: center; gap: 10px;">
-                            <i class="fas fa-truck"></i>
-                            <h2>${formattedDivisionName.toUpperCase()}</h2>
-                        </div>
-                        <i class="fas fa-chevron-down chevron"></i>
-                    </div>
-                    <div class="units-container">
-                        ${units.map((unit, index) => `
-                            <div class="unit-item" style="transition-delay: ${index * 0.1}s">
-                                <span>${unit.name}</span>
-                                <button 
-                                    class="track-btn" 
-                                    onclick="window.open('${unit.link}', '_blank')"
-                                    style="background: ${COLORS[divisionName.toUpperCase()]}">
-                                    <i class="fas fa-map-marker-alt"></i> Track
-                                </button>
-                            </div>
-                        `).join('')}
-                    </div>
-                `;
-                
-                // Tambahkan efek klik
-                const header = divisionCard.querySelector('.card-header');
-                header.addEventListener('click', () => {
-                    divisionCard.classList.toggle('active');
-                });
+async function fetchData() {
+    try {
+        const API_URL = 'https://script.google.com/macros/s/AKfycbxLu6ekwN7DN6l1lqfPFR-ehTpJKC4jjY454lqLTO7_OTywln-eaJNjUA_fhUTvdY-6/exec';
+        const response = await fetch(API_URL);
+        const data = await response.json();
+        
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('content').style.display = 'block';
+        
+        renderData(data);
+    } catch (error) {
+        console.error('Error:', error);
+        document.getElementById('loading').innerHTML = 
+            '<p style="color: red">Gagal memuat data. Silakan refresh halaman.</p>';
+    }
+}
 
-                container.appendChild(divisionCard);
-            }
-        }
+function renderData(data) {
+    const container = document.getElementById('divisions-container');
+    
+    for(const [divisionName, units] of Object.entries(data)) {
+        // Replace underscore with space
+        const formattedDivisionName = divisionName.replace(/_/g, ' ');
+        
+        const divisionCard = document.createElement('div');
+        divisionCard.className = 'division-card';
+        divisionCard.innerHTML = `
+            <div class="card-header">
+                <i class="fas fa-truck"></i> <!-- Icon truk untuk semua divisi -->
+                <h2>${formattedDivisionName.toUpperCase()}</h2>
+            </div>
+            ${units.map(unit => `
+                <div class="unit-item">
+                    <span>${unit.name}</span>
+                    <button 
+                        class="track-btn" 
+                        onclick="window.open('${unit.link}', '_blank')"
+                        style="background: ${COLORS[divisionName.toUpperCase()]}">
+                        <i class="fas fa-map-marker-alt"></i> Track
+                    </button>
+                </div>
+            `).join('')}
+        `;
+        
+        container.appendChild(divisionCard);
+    }
+}
 
-        fetchData();
+// Initial load
+fetchData();
     </script>
 </body>
 </html>
