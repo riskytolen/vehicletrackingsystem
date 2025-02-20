@@ -6,17 +6,19 @@
     <title>Pemantauan Unit</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Poppins', sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f4;
+            background: linear-gradient(to right, #4facfe, #00f2fe);
+            color: #333;
         }
         
         header {
-            background: #007bff;
-            color: white;
+            background: #ffffff;
+            color: #333;
             text-align: center;
-            padding: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
         }
         
         #devisi-container {
@@ -24,39 +26,65 @@
             flex-wrap: wrap;
             justify-content: center;
             padding: 20px;
+            gap: 20px;
         }
         
         .devisi {
             background: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            padding: 20px;
             margin: 10px;
-            width: 300px;
+            width: 320px;
             text-align: center;
+            transition: transform 0.3s ease-in-out;
+        }
+        
+        .devisi:hover {
+            transform: translateY(-5px);
         }
         
         .devisi h2 {
-            color: #333;
+            color: #007bff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
         
         ul {
             list-style: none;
             padding: 0;
+            margin-top: 10px;
         }
         
         li {
             margin: 10px 0;
+            background: #007bff;
+            border-radius: 5px;
+            padding: 10px;
+            transition: background 0.3s ease;
+        }
+        
+        li:hover {
+            background: #0056b3;
         }
         
         a {
             text-decoration: none;
-            color: #007bff;
+            color: white;
             font-weight: bold;
+            display: block;
         }
         
-        a:hover {
-            text-decoration: underline;
+        @media (max-width: 768px) {
+            #devisi-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            .devisi {
+                width: 90%;
+            }
         }
     </style>
     <script>
