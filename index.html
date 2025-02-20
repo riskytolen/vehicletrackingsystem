@@ -10,9 +10,6 @@
             --primary: #2c3e50;
             --secondary: #3498db;
             --accent: #e74c3c;
-            --background: #f5f6fa;
-            --card-bg: #ffffff;
-            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
         * {
@@ -23,9 +20,8 @@
 
         body {
             font-family: 'Segoe UI', sans-serif;
-            background: var(--background);
+            background: #f5f6fa;
             color: var(--primary);
-            line-height: 1.6;
         }
 
         .container {
@@ -37,172 +33,84 @@
         .header {
             text-align: center;
             padding: 2rem;
-            background: linear-gradient(135deg, var(--primary) 0%, #1a252f 100%);
+            background: var(--primary);
             color: white;
             border-radius: 10px;
             margin-bottom: 2rem;
-            box-shadow: var(--shadow);
-        }
-
-        .header h1 {
-            font-size: 2.2rem;
-            margin-bottom: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
 
         .division-group {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 1.5rem;
+            margin-bottom: 2rem;
         }
 
         .division-card {
-            background: var(--card-bg);
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: var(--shadow);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
         }
 
         .division-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+            transform: translateY(-5px);
         }
 
         .card-header {
-            padding: 1.5rem;
-            background: linear-gradient(135deg, var(--primary) 0%, #2c3e50 100%);
-            color: white;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .card-header-content {
             display: flex;
             align-items: center;
-            gap: 15px;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #eee;
         }
 
-        .card-icon {
-            font-size: 1.8rem;
-            color: rgba(255, 255, 255, 0.9);
-        }
-
-        .card-title {
-            font-size: 1.3rem;
-            font-weight: 600;
-        }
-
-        .chevron {
-            transition: transform 0.3s ease;
-            font-size: 1.2rem;
-        }
-
-        .division-card.active .chevron {
-            transform: rotate(180deg);
-        }
-
-        .units-container {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .division-card.active .units-container {
-            max-height: 1000px;
-            padding: 1.5rem;
-        }
-
-        .units-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1rem;
+        .card-header i {
+            font-size: 1.5rem;
+            margin-right: 1rem;
         }
 
         .unit-item {
-            background: var(--background);
-            border-radius: 10px;
-            padding: 1.2rem;
             display: flex;
-            flex-direction: column;
-            gap: 10px;
-            opacity: 0;
-            transform: translateY(-10px);
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            background: #f8f9fa;
+            border-radius: 8px;
             transition: all 0.3s ease;
-            border: 1px solid rgba(0, 0, 0, 0.05);
         }
 
-        .division-card.active .unit-item {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .unit-name {
-            font-weight: 500;
-            color: var(--primary);
+        .unit-item:hover {
+            background: var(--secondary);
+            color: white;
         }
 
         .track-btn {
             background: var(--accent);
             color: white;
             border: none;
-            padding: 0.7rem 1.2rem;
-            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: transform 0.2s ease;
-            width: 100%;
-            justify-content: center;
+            transition: opacity 0.3s ease;
         }
 
         .track-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+            opacity: 0.9;
         }
 
-        .loading-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(255, 255, 255, 0.95);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-
-        .loader {
-            width: 80px;
-            height: 80px;
-            position: relative;
-        }
-
-        .loader div {
-            position: absolute;
-            width: 16px;
-            height: 16px;
-            background: var(--secondary);
-            border-radius: 50%;
-            animation: loader 1.2s linear infinite;
-        }
-
-        @keyframes loader {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            font-size: 1.2rem;
         }
 
         @media (max-width: 768px) {
             .division-group {
                 grid-template-columns: 1fr;
-            }
-            
-            .header h1 {
-                font-size: 1.8rem;
             }
         }
     </style>
@@ -210,16 +118,12 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1><i class="fas fa-car-side"></i> Vehicle Tracking</h1>
+            <h1><i class="fas fa-car-side"></i> Vehicle Tracking System</h1>
             <p>Real-time monitoring kendaraan perusahaan</p>
         </div>
 
-        <div class="loading-container" id="loading">
-            <div class="loader">
-                <div></div>
-                <div></div>
-                <div></div>
-            </div>
+        <div id="loading" class="loading">
+            <i class="fas fa-spinner fa-spin"></i> Memuat data...
         </div>
 
         <div id="content" style="display: none;">
@@ -228,99 +132,69 @@
     </div>
 
     <script>
-        const DIVISION_THEMES = {
-            'GUDANG': {
-                color: '#3498db',
-                icon: 'warehouse'
-            },
-            'CP SUKA': {
-                color: '#e67e22',
-                icon: 'truck-moving'
-            },
-            'HYBRID': {
-                color: '#2ecc71',
-                icon: 'charging-station'
-            }
+        const DIVISION_ICONS = {
+            'GUDANG': 'warehouse',
+            'CP SUKA': 'truck-moving',
+            'HYBRID': 'charging-station'
         };
 
-        async function fetchData() {
-            try {
-                const API_URL = 'https://script.google.com/macros/s/AKfycbxGDJ1nJ7Ip5xoPj04O-M57uemGdDz_wFcX8cwGNWR7M7Pv5RaYdCEBnjncA-tJcP8/exec';
-                const response = await fetch(API_URL);
-                const data = await response.json();
-                
-                document.getElementById('loading').style.display = 'none';
-                document.getElementById('content').style.display = 'block';
-                
-                renderData(data);
-            } catch (error) {
-                console.error('Error:', error);
-                document.getElementById('loading').innerHTML = 
-                    '<p style="color: red">Gagal memuat data. Silakan refresh halaman.</p>';
-            }
-        }
+     const COLORS = {
+    'GUDANG': '#3498db',
+    'CP SUKA': '#e67e22',
+    'HYBRID': '#2ecc71'
+};
 
-        function renderData(data) {
-            const container = document.getElementById('divisions-container');
-            
-            for(const [divisionName, units] of Object.entries(data)) {
-                const formattedDivisionName = divisionName.replace(/_/g, ' ');
-                const theme = DIVISION_THEMES[divisionName.toUpperCase()];
-                
-                const divisionCard = document.createElement('div');
-                divisionCard.className = 'division-card';
-                divisionCard.innerHTML = `
-                    <div class="card-header" style="background: linear-gradient(135deg, ${theme.color} 0%, ${shadeColor(theme.color, -20)} 100%)">
-                        <div class="card-header-content">
-                            <i class="fas fa-${theme.icon} card-icon"></i>
-                            <div>
-                                <div class="card-title">${formattedDivisionName.toUpperCase()}</div>
-                                <small>${units.length} Unit Tersedia</small>
-                            </div>
-                        </div>
-                        <i class="fas fa-chevron-down chevron"></i>
-                    </div>
-                    <div class="units-container">
-                        <div class="units-grid">
-                            ${units.map((unit, index) => `
-                                <div class="unit-item" style="transition-delay: ${index * 0.1}s">
-                                    <div class="unit-name">${unit.name}</div>
-                                    <button 
-                                        class="track-btn"
-                                        onclick="window.open('${unit.link}', '_blank')"
-                                        style="background: ${theme.color}">
-                                        <i class="fas fa-map-marker-alt"></i>
-                                        Lacak Sekarang
-                                    </button>
-                                </div>
-                            `).join('')}
-                        </div>
-                    </div>
-                `;
-                
-                const header = divisionCard.querySelector('.card-header');
-                header.addEventListener('click', () => {
-                    document.querySelectorAll('.division-card.active').forEach(card => {
-                        if (card !== divisionCard) card.classList.remove('active');
-                    });
-                    divisionCard.classList.toggle('active');
-                });
+async function fetchData() {
+    try {
+        const API_URL = 'https://script.google.com/macros/s/AKfycbzHm160N3N1Zi2Gw7KO-TROlXNkFgW9mhYLHKHXyhRgZMM8kpNarH7Zya0oPMbF6kM/exec';
+        const response = await fetch(API_URL);
+        const data = await response.json();
+        
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('content').style.display = 'block';
+        
+        renderData(data);
+    } catch (error) {
+        console.error('Error:', error);
+        document.getElementById('loading').innerHTML = 
+            '<p style="color: red">Gagal memuat data. Silakan refresh halaman.</p>';
+    }
+}
 
-                container.appendChild(divisionCard);
-            }
-        }
+function renderData(data) {
+    const container = document.getElementById('divisions-container');
+    
+    for(const [divisionName, units] of Object.entries(data)) {
+        // Replace underscore with space
+        const formattedDivisionName = divisionName.replace(/_/g, ' ');
+        
+        const divisionCard = document.createElement('div');
+        divisionCard.className = 'division-card';
+        divisionCard.innerHTML = `
+            <div class="card-header">
+                <i class="fas fa-truck"></i> <!-- Icon truk untuk semua divisi -->
+                <h2>${formattedDivisionName.toUpperCase()}</h2>
+            </div>
+            ${units.map(unit => `
+                <div class="unit-item">
+                    <span>${unit.name}</span>
+                    <button 
+                        class="track-btn" 
+                        onclick="window.open('${unit.link}', '_blank')"
+                        style="background: ${COLORS[divisionName.toUpperCase()]}">
+                        <i class="fas fa-map-marker-alt"></i> Track
+                    </button>
+                </div>
+            `).join('')}
+        `;
+        
+        container.appendChild(divisionCard);
+    }
+}
 
-        function shadeColor(color, percent) {
-            const num = parseInt(color.replace("#",""),16);
-            const amt = Math.round(2.55 * percent);
-            const R = (num >> 16) + amt;
-            const G = (num >> 8 & 0x00FF) + amt;
-            const B = (num & 0x0000FF) + amt;
-            return `#${(1 << 24 | (R < 255 ? R < 1 ? 0 : R : 255) << 16 | (G < 255 ? G < 1 ? 0 : G : 255) << 8 | (B < 255 ? B < 1 ? 0 : B : 255)).toString(16).slice(1)}`;
-        }
 
+        // Initial load
         fetchData();
     </script>
 </body>
 </html>
-
