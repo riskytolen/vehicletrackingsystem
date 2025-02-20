@@ -194,10 +194,12 @@
     </div>
 
     <script>
-        const DEFAULT_COLORS = [
-            '#3498db', '#e67e22', '#2ecc71',
-            '#9b59b6', '#1abc9c', '#f1c40f'
-        ];
+        const DIVISION_COLORS = {
+            'GUDANG': '#3498db',  // Biru
+            'HYBRID': '#2ecc71',  // Hijau
+            'LOGISTIK': '#e67e22', // Oranye
+            // Tambahkan divisi lain di sini
+        };
 
         // Fungsi untuk menampilkan popup
         function showPopup() {
@@ -212,19 +214,10 @@
             }, 3000);
         }
 
-      function getDivisionColor(divisionName) {
-    // Tambahkan offset unik berdasarkan nama divisi
-    const offset = {
-        'GUDANG': 0,
-        'HYBRID': 1,
-        'LOGISTIK': 2,
-        // Tambahkan divisi lain di sini
-    }[divisionName.toUpperCase()] || 0;
-
-    const hash = divisionName.split('').reduce((acc, char) => 
-        char.charCodeAt(0) + (acc << 5) - acc, 0);
-    return DEFAULT_COLORS[(Math.abs(hash) + offset) % DEFAULT_COLORS.length];
-}
+     // Fungsi untuk mendapatkan warna divisi
+        function getDivisionColor(divisionName) {
+            return DIVISION_COLORS[divisionName.toUpperCase()] || '#9b59b6'; // Default ungu jika divisi tidak ditemukan
+        }
 
         async function fetchData() {
             try {
