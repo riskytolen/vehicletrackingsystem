@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vehicle Tracking System</title>
+    <title>Dynamic Vehicle Tracking</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
@@ -118,8 +118,8 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1><i class="fas fa-car-side"></i> Vehicle Tracking System</h1>
-            <p>Real-time monitoring kendaraan perusahaan</p>
+            <h1><i class="fas fa-car-side"></i> Dynamic Vehicle Tracking</h1>
+            <p>Real-time monitoring kendaraan berbasis Google Sheets</p>
         </div>
 
         <div id="loading" class="loading">
@@ -132,68 +132,84 @@
     </div>
 
     <script>
-        const DIVISION_ICONS = {
+        const DEFAULT_COLORS = [
+            '#3498db', // Blue
+            '#e67e22', // Orange
+            '#2ecc71', // Green
+            '#9b59b6', // Purple
+            '#e74c3c', // Red
+            '#1abc9c'  // Turquoise
+        ];
+
+        const ICON_MAP = {
             'GUDANG': 'warehouse',
-            'CP SUKA': 'truck-moving',
-            'HYBRID': 'charging-station'
+            'LOGISTIK': 'truck',
+            'PEMELIHARAAN': 'tools',
+            'HYBRID': 'charging-station',
+            'DEFAULT': 'car'
         };
 
-     const COLORS = {
-    'GUDANG': '#3498db',
-    'CP SUKA': '#e67e22',
-    'HYBRID': '#2ecc71'
-};
+        async function fetchData() {
+            try {
+                const API_URL = 'https://script.google.com/macros/s/AKfycbw4GV_tbBwayicGSAWDSBSGzYcW9L1Pfl41ZYPKIOBMNOOb_MCudoaQ0_z_ZIsUdFxW/exec';
+                const response = await fetch(API_URL);
+                const data = await response.json();
+                
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('content').style.display = 'block';
+                
+                renderData(data);
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('loading').innerHTML = 
+                    '<p style="color: red">Gagal memuat data. Silakan refresh halaman.</p>';
+            }
+        }
 
-async function fetchData() {
-    try {
-        const API_URL = 'https://script.google.com/macros/s/AKfycbxLu6ekwN7DN6l1lqfPFR-ehTpJKC4jjY454lqLTO7_OTywln-eaJNjUA_fhUTvdY-6/exec';
-        const response = await fetch(API_URL);
-        const data = await response.json();
-        
-        document.getElementById('loading').style.display = 'none';
-        document.getElementById('content').style.display = 'block';
-        
-        renderData(data);
-    } catch (error) {
-        console.error('Error:', error);
-        document.getElementById('loading').innerHTML = 
-            '<p style="color: red">Gagal memuat data. Silakan refresh halaman.</p>';
-    }
-}
+        function getDivisionColor(divisionName) {
+            // Generate consistent color based on division name
+            const hash = divisionName.split('').reduce((acc, char) => 
+                char.charCodeAt(0) + (acc << 5) - acc, 0);
+            return DEFAULT_COLORS[Math.abs(hash) % DEFAULT_COLORS.length];
+        }
 
-function renderData(data) {
-    const container = document.getElementById('divisions-container');
-    
-    for(const [divisionName, units] of Object.entries(data)) {
-        // Replace underscore with space
-        const formattedDivisionName = divisionName.replace(/_/g, ' ');
-        
-        const divisionCard = document.createElement('div');
-        divisionCard.className = 'division-card';
-        divisionCard.innerHTML = `
-            <div class="card-header">
-                <i class="fas fa-truck"></i> <!-- Icon truk untuk semua divisi -->
-                <h2>${formattedDivisionName.toUpperCase()}</h2>
-            </div>
-            ${units.map(unit => `
-                <div class="unit-item">
-                    <span>${unit.name}</span>
-                    <button 
-                        class="track-btn" 
-                        onclick="window.open('${unit.link}', '_blank')"
-                        style="background: ${COLORS[divisionName.toUpperCase()]}">
-                        <i class="fas fa-map-marker-alt"></i> Track
-                    </button>
-                </div>
-            `).join('')}
-        `;
-        
-        container.appendChild(divisionCard);
-    }
-}
+        function getDivisionIcon(divisionName) {
+            const formattedName = divisionName.toUpperCase();
+            return ICON_MAP[formattedName] || ICON_MAP.DEFAULT;
+        }
 
-// Initial load
-fetchData();
+        function renderData(data) {
+            const container = document.getElementById('divisions-container');
+            container.innerHTML = '';
+            
+            Object.entries(data).forEach(([divisionName, units]) => {
+                const divisionCard = document.createElement('div');
+                divisionCard.className = 'division-card';
+                
+                divisionCard.innerHTML = `
+                    <div class="card-header">
+                        <i class="fas fa-${getDivisionIcon(divisionName)}"></i>
+                        <h2>${divisionName}</h2>
+                    </div>
+                    ${units.map(unit => `
+                        <div class="unit-item">
+                            <span>${unit.name}</span>
+                            <button 
+                                class="track-btn" 
+                                onclick="window.open('${unit.link}', '_blank')"
+                                style="background: ${getDivisionColor(divisionName)}">
+                                <i class="fas fa-map-marker-alt"></i> Track
+                            </button>
+                        </div>
+                    `).join('')}
+                `;
+                
+                container.appendChild(divisionCard);
+            });
+        }
+
+        // Initial load
+        fetchData();
     </script>
 </body>
 </html>
