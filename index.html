@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Riwayat Perbaikan Mobil</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin: 50px; }
+        table { width: 100%; margin-top: 20px; border-collapse: collapse; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+    </style>
+</head>
+<body>
+    <h2>Riwayat Perbaikan Mobil</h2>
+    <table id="hasil" style="display:none;">
+        <thead>
+            <tr>
+                <th>Kode Barcode</th>
+                <th>Plat Nomor</th>
+                <th>Tanggal</th>
+                <th>Jenis Perbaikan</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody id="dataRiwayat"></tbody>
+    </table>
+
+    <script>
+        function getQueryParam(param) {
+            let params = new URLSearchParams(window.location.search);
+            return params.get(param);
+        }
+
+        async function cariRiwayat(barcode) {
+            if (!barcode) return;
+            let url = `https://script.google.com/macros/s/AKfycbzUAbOnifn8CwPMVrR88uwG8m6fkASEeDgc9GGU-ozeYhkuIh8zQMcdhfPqTwpHL-ZM/exec?barcode=${barcode}`;
+            let response = await fetch(url);
+            let data = await response.json();
+
+            let tabel = document.getElementById("hasil");
+            let tbody = document.getElementById("dataRiwayat");
+            tbody.innerHTML = "";
+
+            if (data.length > 0) {
+                data.forEach(item => {
+                    let row = `<tr>
+                        <td>${item.kode}</td>
+                        <td>${item.plat}</td>
+                        <td>${item.tanggal}</td>
+                        <td>${item.jenis}</td>
+                        <td>${item.status}</td>
+                    </tr>`;
+                    tbody.innerHTML += row;
+                });
+                tabel.style.display = "table";
+            } else {
+                alert("Data tidak ditemukan!");
+                tabel.style.display = "none";
+            }
+        }
+
+        // Ambil barcode dari URL dan cari otomatis
+        let barcode = getQueryParam("barcode");
+        if (barcode) {
+            cariRiwayat(barcode);
+        }
+    </script>
+</body>
+</html>
