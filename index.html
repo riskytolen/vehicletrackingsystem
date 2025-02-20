@@ -212,11 +212,19 @@
             }, 3000);
         }
 
-        function getDivisionColor(divisionName) {
-            const hash = divisionName.split('').reduce((acc, char) => 
-                char.charCodeAt(0) + (acc << 5) - acc, 0);
-            return DEFAULT_COLORS[Math.abs(hash) % DEFAULT_COLORS.length];
-        }
+      function getDivisionColor(divisionName) {
+    // Tambahkan offset unik berdasarkan nama divisi
+    const offset = {
+        'GUDANG': 0,
+        'HYBRID': 1,
+        'LOGISTIK': 2,
+        // Tambahkan divisi lain di sini
+    }[divisionName.toUpperCase()] || 0;
+
+    const hash = divisionName.split('').reduce((acc, char) => 
+        char.charCodeAt(0) + (acc << 5) - acc, 0);
+    return DEFAULT_COLORS[(Math.abs(hash) + offset) % DEFAULT_COLORS.length];
+}
 
         async function fetchData() {
             try {
