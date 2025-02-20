@@ -1,69 +1,168 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Riwayat Perbaikan Mobil</title>
+    <title>Unit Monitoring</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; margin: 50px; }
-        table { width: 100%; margin-top: 20px; border-collapse: collapse; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+        /* styles.css */
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: var(--background);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: var(--primary-color);
+        }
+
+        .division-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .division-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .division-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .division-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .division-icon {
+            font-size: 24px;
+            margin-right: 10px;
+            color: var(--secondary-color);
+        }
+
+        .unit-list {
+            list-style: none;
+        }
+
+        .unit-item {
+            padding: 10px;
+            margin: 5px 0;
+            background: #f8f9fa;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .unit-item:hover {
+            background: var(--secondary-color);
+            color: white;
+            transform: scale(1.02);
+        }
+
+        .link-icon {
+            margin-left: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .division-grid {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 </head>
 <body>
-    <h2>Riwayat Perbaikan Mobil</h2>
-    <table id="hasil" style="display:none;">
-        <thead>
-            <tr>
-                <th>Kode Barcode</th>
-                <th>Plat Nomor</th>
-                <th>Tanggal</th>
-                <th>Jenis Perbaikan</th>
-                <th>Status</th>
-            </tr>
-        </thead>
-        <tbody id="dataRiwayat"></tbody>
-    </table>
+    <div class="container">
+        <h1 class="header"><i class="fas fa-chart-line"></i> Unit Monitoring System</h1>
+        <div class="division-grid" id="divisionsContainer"></div>
+    </div>
 
     <script>
-        function getQueryParam(param) {
-            let params = new URLSearchParams(window.location.search);
-            return params.get(param);
+        // app.js
+        const API_URL = 'https://script.google.com/macros/s/AKfycby7e4FnMUoOav3ds8cbNx1-igk5yaj9DCDOF62hRUJH7syLKbfyRC0VPbFgoR6sqg8F/exec'; // Ganti dengan URL Web App Anda
+        
+        function getDivisionIcon(divisionName) {
+            const icons = {
+                'Kendaraan': 'car',
+                'Logistik': 'truck',
+                'Teknologi': 'microchip',
+                'Operasional': 'cogs'
+            };
+            return icons[divisionName] || 'building';
         }
 
-        async function cariRiwayat(barcode) {
-            if (!barcode) return;
-            let url = `https://script.google.com/macros/s/AKfycbzUAbOnifn8CwPMVrR88uwG8m6fkASEeDgc9GGU-ozeYhkuIh8zQMcdhfPqTwpHL-ZM/exec?barcode=${barcode}`;
-            let response = await fetch(url);
-            let data = await response.json();
-
-            let tabel = document.getElementById("hasil");
-            let tbody = document.getElementById("dataRiwayat");
-            tbody.innerHTML = "";
-
-            if (data.length > 0) {
-                data.forEach(item => {
-                    let row = `<tr>
-                        <td>${item.kode}</td>
-                        <td>${item.plat}</td>
-                        <td>${item.tanggal}</td>
-                        <td>${item.jenis}</td>
-                        <td>${item.status}</td>
-                    </tr>`;
-                    tbody.innerHTML += row;
-                });
-                tabel.style.display = "table";
-            } else {
-                alert("Data tidak ditemukan!");
-                tabel.style.display = "none";
+        async function loadData() {
+            try {
+                const response = await fetch(API_URL);
+                const data = await response.json();
+                
+                const container = document.getElementById('divisionsContainer');
+                container.innerHTML = '';
+                
+                for (const [division, units] of Object.entries(data)) {
+                    const card = document.createElement('div');
+                    card.className = 'division-card';
+                    
+                    const iconClass = getDivisionIcon(division);
+                    card.innerHTML = `
+                        <div class="division-header">
+                            <i class="fas fa-${iconClass} division-icon"></i>
+                            <h2>${division}</h2>
+                        </div>
+                        <ul class="unit-list">
+                            ${units.map(unit => `
+                                <li class="unit-item" data-link="${unit.link}">
+                                    ${unit.unit}
+                                    <i class="fas fa-external-link-alt link-icon"></i>
+                                </li>
+                            `).join('')}
+                        </ul>
+                    `;
+                    
+                    card.querySelectorAll('.unit-item').forEach(item => {
+                        item.addEventListener('click', () => {
+                            window.open(item.dataset.link, '_blank');
+                        });
+                    });
+                    
+                    container.appendChild(card);
+                }
+            } catch (error) {
+                console.error('Error loading data:', error);
             }
         }
 
-        // Ambil barcode dari URL dan cari otomatis
-        let barcode = getQueryParam("barcode");
-        if (barcode) {
-            cariRiwayat(barcode);
-        }
+        loadData();
     </script>
 </body>
 </html>
