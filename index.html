@@ -89,17 +89,21 @@
         }
 
         .track-btn {
-            background: var(--accent);
             color: white;
             border: none;
             padding: 0.5rem 1rem;
             border-radius: 5px;
             cursor: pointer;
             transition: opacity 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
-        .track-btn:hover {
-            opacity: 0.9;
+        .track-btn.disabled {
+            background: #e74c3c !important;
+            cursor: not-allowed;
+            opacity: 0.8;
         }
 
         .loading {
@@ -191,12 +195,8 @@
 
     <script>
         const DEFAULT_COLORS = [
-            '#3498db', // Blue
-            '#e67e22', // Orange
-            '#2ecc71', // Green
-            '#9b59b6', // Purple
-            '#e74c3c', // Red
-            '#1abc9c'  // Turquoise
+            '#3498db', '#e67e22', '#2ecc71',
+            '#9b59b6', '#1abc9c', '#f1c40f'
         ];
 
         // Fungsi untuk menampilkan popup
@@ -206,20 +206,16 @@
             popup.style.display = 'block';
             overlay.style.display = 'block';
 
-            // Sembunyikan popup setelah 3 detik
             setTimeout(() => {
                 popup.style.display = 'none';
                 overlay.style.display = 'none';
             }, 3000);
         }
 
-        // Fungsi untuk menangani klik tombol track
-        function handleTrack(link) {
-            if (link) {
-                window.open(link, '_blank');
-            } else {
-                showPopup();
-            }
+        function getDivisionColor(divisionName) {
+            const hash = divisionName.split('').reduce((acc, char) => 
+                char.charCodeAt(0) + (acc << 5) - acc, 0);
+            return DEFAULT_COLORS[Math.abs(hash) % DEFAULT_COLORS.length];
         }
 
         async function fetchData() {
@@ -239,17 +235,12 @@
             }
         }
 
-        function getDivisionColor(divisionName) {
-            const hash = divisionName.split('').reduce((acc, char) => 
-                char.charCodeAt(0) + (acc << 5) - acc, 0);
-            return DEFAULT_COLORS[Math.abs(hash) % DEFAULT_COLORS.length];
-        }
-
         function renderData(data) {
             const container = document.getElementById('divisions-container');
             container.innerHTML = '';
             
             Object.entries(data).forEach(([divisionName, units]) => {
+                const divisionColor = getDivisionColor(divisionName);
                 const divisionCard = document.createElement('div');
                 divisionCard.className = 'division-card';
                 
@@ -258,17 +249,24 @@
                         <i class="fas fa-truck"></i>
                         <h2>${divisionName}</h2>
                     </div>
-                    ${units.map(unit => `
+                    ${units.map(unit => {
+                        const hasLink = unit.link && unit.link.trim() !== '';
+                        const buttonColor = hasLink ? divisionColor : '#e74c3c';
+                        const icon = hasLink ? 'fa-map-marker-alt' : 'fa-exclamation-triangle';
+        
+
+                        return `
                         <div class="unit-item">
                             <span>${unit.name}</span>
                             <button 
-                                class="track-btn" 
-                                onclick="handleTrack('${unit.link}')"
-                                style="background: ${getDivisionColor(divisionName)}">
-                                <i class="fas fa-map-marker-alt"></i> Track
+                                class="track-btn ${!hasLink ? 'disabled' : ''}" 
+                                onclick="${hasLink ? `window.open('${unit.link}', '_blank')` : 'showPopup()'}"
+                                style="background: ${buttonColor}">
+                                <i class="fas ${icon}"></i> ${text}
                             </button>
                         </div>
-                    `).join('')}
+                        `;
+                    }).join('')}
                 `;
                 
                 container.appendChild(divisionCard);
