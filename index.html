@@ -108,6 +108,57 @@
             font-size: 1.2rem;
         }
 
+        /* Popup Styling */
+        .popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            text-align: center;
+            z-index: 1000;
+            animation: fadeIn 0.5s, shake 0.5s;
+        }
+
+        .popup i {
+            font-size: 3rem;
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+
+        .popup p {
+            font-size: 1.2rem;
+            color: var(--primary);
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes shake {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            25% { transform: translate(-50%, -50%) rotate(-5deg); }
+            50% { transform: translate(-50%, -50%) rotate(5deg); }
+            75% { transform: translate(-50%, -50%) rotate(-5deg); }
+            100% { transform: translate(-50%, -50%) rotate(0deg); }
+        }
+
         @media (max-width: 768px) {
             .division-group {
                 grid-template-columns: 1fr;
@@ -131,6 +182,13 @@
         </div>
     </div>
 
+    <!-- Popup untuk GPS tidak tersedia -->
+    <div class="overlay" id="overlay"></div>
+    <div class="popup" id="popup">
+        <i class="fas fa-exclamation-triangle"></i>
+        <p>GPS TIDAK TERSEDIA</p>
+    </div>
+
     <script>
         const DEFAULT_COLORS = [
             '#3498db', // Blue
@@ -140,6 +198,29 @@
             '#e74c3c', // Red
             '#1abc9c'  // Turquoise
         ];
+
+        // Fungsi untuk menampilkan popup
+        function showPopup() {
+            const popup = document.getElementById('popup');
+            const overlay = document.getElementById('overlay');
+            popup.style.display = 'block';
+            overlay.style.display = 'block';
+
+            // Sembunyikan popup setelah 3 detik
+            setTimeout(() => {
+                popup.style.display = 'none';
+                overlay.style.display = 'none';
+            }, 3000);
+        }
+
+        // Fungsi untuk menangani klik tombol track
+        function handleTrack(link) {
+            if (link) {
+                window.open(link, '_blank');
+            } else {
+                showPopup();
+            }
+        }
 
         async function fetchData() {
             try {
@@ -159,7 +240,6 @@
         }
 
         function getDivisionColor(divisionName) {
-            // Generate consistent color based on division name
             const hash = divisionName.split('').reduce((acc, char) => 
                 char.charCodeAt(0) + (acc << 5) - acc, 0);
             return DEFAULT_COLORS[Math.abs(hash) % DEFAULT_COLORS.length];
@@ -183,7 +263,7 @@
                             <span>${unit.name}</span>
                             <button 
                                 class="track-btn" 
-                                onclick="window.open('${unit.link}', '_blank')"
+                                onclick="handleTrack('${unit.link}')"
                                 style="background: ${getDivisionColor(divisionName)}">
                                 <i class="fas fa-map-marker-alt"></i> Track
                             </button>
