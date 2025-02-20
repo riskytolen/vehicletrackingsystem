@@ -1,168 +1,108 @@
-<!-- index.html -->
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Unit Monitoring</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>Pemantauan Unit</title>
     <style>
-        /* styles.css */
-        :root {
-            --primary-color: #2c3e50;
-            --secondary-color: #3498db;
-            --background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-        }
-
-        * {
-            box-sizing: border-box;
+        body {
+            font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
+            background-color: #f4f4f4;
         }
-
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            background: var(--background);
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 40px;
-            color: var(--primary-color);
-        }
-
-        .division-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-        }
-
-        .division-card {
-            background: white;
-            border-radius: 15px;
-            padding: 20px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease;
-        }
-
-        .division-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .division-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-
-        .division-icon {
-            font-size: 24px;
-            margin-right: 10px;
-            color: var(--secondary-color);
-        }
-
-        .unit-list {
-            list-style: none;
-        }
-
-        .unit-item {
-            padding: 10px;
-            margin: 5px 0;
-            background: #f8f9fa;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .unit-item:hover {
-            background: var(--secondary-color);
+        
+        header {
+            background: #007bff;
             color: white;
-            transform: scale(1.02);
+            text-align: center;
+            padding: 1rem;
         }
-
-        .link-icon {
-            margin-left: 10px;
+        
+        #devisi-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 20px;
         }
-
-        @media (max-width: 768px) {
-            .division-grid {
-                grid-template-columns: 1fr;
-            }
+        
+        .devisi {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 15px;
+            margin: 10px;
+            width: 300px;
+            text-align: center;
+        }
+        
+        .devisi h2 {
+            color: #333;
+        }
+        
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        li {
+            margin: 10px 0;
+        }
+        
+        a {
+            text-decoration: none;
+            color: #007bff;
+            font-weight: bold;
+        }
+        
+        a:hover {
+            text-decoration: underline;
         }
     </style>
-</head>
-<body>
-    <div class="container">
-        <h1 class="header"><i class="fas fa-chart-line"></i> Unit Monitoring System</h1>
-        <div class="division-grid" id="divisionsContainer"></div>
-    </div>
-
     <script>
-        // app.js
-        const API_URL = 'https://script.google.com/macros/s/AKfycby7e4FnMUoOav3ds8cbNx1-igk5yaj9DCDOF62hRUJH7syLKbfyRC0VPbFgoR6sqg8F/exec'; // Ganti dengan URL Web App Anda
-        
-        function getDivisionIcon(divisionName) {
-            const icons = {
-                'Kendaraan': 'car',
-                'Logistik': 'truck',
-                'Teknologi': 'microchip',
-                'Operasional': 'cogs'
-            };
-            return icons[divisionName] || 'building';
-        }
-
-        async function loadData() {
+        document.addEventListener("DOMContentLoaded", async () => {
+            const apiUrl = "https://script.google.com/macros/s/AKfycby7e4FnMUoOav3ds8cbNx1-igk5yaj9DCDOF62hRUJH7syLKbfyRC0VPbFgoR6sqg8F/exec"; // Ganti dengan URL API Anda
             try {
-                const response = await fetch(API_URL);
+                const response = await fetch(apiUrl);
                 const data = await response.json();
                 
-                const container = document.getElementById('divisionsContainer');
-                container.innerHTML = '';
+                const container = document.getElementById("devisi-container");
                 
-                for (const [division, units] of Object.entries(data)) {
-                    const card = document.createElement('div');
-                    card.className = 'division-card';
+                Object.keys(data).forEach(devisi => {
+                    const devisiDiv = document.createElement("div");
+                    devisiDiv.classList.add("devisi");
                     
-                    const iconClass = getDivisionIcon(division);
-                    card.innerHTML = `
-                        <div class="division-header">
-                            <i class="fas fa-${iconClass} division-icon"></i>
-                            <h2>${division}</h2>
-                        </div>
-                        <ul class="unit-list">
-                            ${units.map(unit => `
-                                <li class="unit-item" data-link="${unit.link}">
-                                    ${unit.unit}
-                                    <i class="fas fa-external-link-alt link-icon"></i>
-                                </li>
-                            `).join('')}
-                        </ul>
-                    `;
+                    const devisiTitle = document.createElement("h2");
+                    devisiTitle.innerHTML = `🚗 ${devisi}`;
+                    devisiDiv.appendChild(devisiTitle);
                     
-                    card.querySelectorAll('.unit-item').forEach(item => {
-                        item.addEventListener('click', () => {
-                            window.open(item.dataset.link, '_blank');
-                        });
+                    const unitList = document.createElement("ul");
+                    
+                    data[devisi].forEach(unitData => {
+                        const unitItem = document.createElement("li");
+                        const unitLink = document.createElement("a");
+                        unitLink.href = unitData.link;
+                        unitLink.target = "_blank";
+                        unitLink.textContent = unitData.unit;
+                        unitItem.appendChild(unitLink);
+                        unitList.appendChild(unitItem);
                     });
                     
-                    container.appendChild(card);
-                }
+                    devisiDiv.appendChild(unitList);
+                    container.appendChild(devisiDiv);
+                });
             } catch (error) {
-                console.error('Error loading data:', error);
+                console.error("Error fetching data: ", error);
             }
-        }
-
-        loadData();
+        });
     </script>
+</head>
+<body>
+    <header>
+        <h1>Pemantauan Unit Berdasarkan Devisi</h1>
+    </header>
+    <main>
+        <div id="devisi-container"></div>
+    </main>
 </body>
 </html>
