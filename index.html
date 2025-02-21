@@ -195,9 +195,9 @@
 
     <script>
         const DIVISION_COLORS = {
-            'GUDANG': '#3498db',  // Biru
+            'GUDANG': '#2ecc71',  // Hijau
             'HYBRID': '#2ecc71',  // Hijau
-            'LOGISTIK': '#e67e22', // Oranye
+            'CP SUKA': '#2ecc71', // Hijau
             // Tambahkan divisi lain di sini
         };
 
@@ -216,7 +216,7 @@
 
      // Fungsi untuk mendapatkan warna divisi
         function getDivisionColor(divisionName) {
-            return DIVISION_COLORS[divisionName.toUpperCase()] || '#9b59b6'; // Default ungu jika divisi tidak ditemukan
+            return DIVISION_COLORS[divisionName.toUpperCase()] || '#2ecc71'; // Default HIJAU jika divisi tidak ditemukan
         }
 
         async function fetchData() {
